@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SuggestionApp
+namespace WordSuggestion.Service
 {
     public class LimitPriorityQueue<T>
     {

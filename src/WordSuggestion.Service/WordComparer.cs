@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SuggestionApp
+namespace WordSuggestion.Service
 {
     public class WordComparer : IComparer<WordInfo>
     {

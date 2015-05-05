@@ -1,4 +1,4 @@
-﻿namespace SuggestionApp
+﻿namespace WordSuggestion.Service
 {
     public class WordInfo
     {

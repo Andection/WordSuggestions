@@ -81,9 +81,9 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SuggestionApp\SuggestionApp.csproj">
+    <ProjectReference Include="..\SuggestionApp\WordSuggestion.App.csproj">
       <Project>{16d84f2b-7374-47ec-89f3-f49ee4159819}</Project>
-      <Name>SuggestionApp</Name>
+      <Name>WordSuggestion.App</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

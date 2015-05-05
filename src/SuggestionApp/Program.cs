@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using WordSuggestion.Service;
 
 namespace SuggestionApp
 {
-    class Program
+    internal class Program
     {
         private static void Main(string[] args)
         {
