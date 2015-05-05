@@ -52,12 +52,14 @@
     <Compile Include="WordInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="input default.txt">
+    <Content Include="input.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="input large.txt">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="test.cmd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

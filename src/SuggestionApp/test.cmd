@@ -1,0 +1,1 @@
+SuggestionApp.exe < "input.txt" > "output.txt"
