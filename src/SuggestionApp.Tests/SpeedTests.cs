@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using FluentAssertions;
 using NUnit.Framework;
+using WordSuggestion.Service;
 
 namespace SuggestionApp.Tests
 {

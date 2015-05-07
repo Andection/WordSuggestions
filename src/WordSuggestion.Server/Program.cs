@@ -1,7 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using WordSuggestion.Service;
 
 namespace WordSuggestion.Server
 {
@@ -12,12 +16,12 @@ namespace WordSuggestion.Server
         }
     }
 
-    public class TcpServer
+    public class WordSuggestionServer
     {
         private readonly WordSuggestionHandlingService _handlingService;
         private readonly TcpListener _tcpListener;
 
-        public TcpServer(WordSuggestionHandlingService handlingService,int port)
+        public WordSuggestionServer(WordSuggestionHandlingService handlingService, int port)
         {
             _handlingService = handlingService;
             _tcpListener = new TcpListener(IPAddress.Any, port);
@@ -50,17 +54,42 @@ namespace WordSuggestion.Server
 
     public class WordSuggestionHandlingService
     {
-        public void Handle(NetworkStream stream)
+        public WordSuggestionHandlingService(string fileName)
         {
+            using (var stream = File.OpenRead(fileName))
+            {
+                var dictionary = DictionaryLoader.Load(new StreamReader(stream));
+                SuggestionManager.Init(dictionary);
+            }
+        }
+
+        public async void Handle(NetworkStream stream)
+        {
+            var buffer = new byte[1024];
+
             while (true)
             {
-                if (stream.DataAvailable)
+                if (!stream.DataAvailable)
                 {
                     Thread.Sleep(10);
                     continue;
                 }
 
-            //    var token=stream.re
+                var readLenght = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+
+                var message = Encoding.ASCII.GetString(buffer, 0, readLenght);
+
+                var suggestTokens = message.Split(new[] {"get"}, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
+
+                foreach (var token in suggestTokens)
+                {
+                    var suggestions = SuggestionManager.Suggest(token);
+
+                    foreach (var sendBytes in suggestions.Select(suggestion => Encoding.ASCII.GetBytes(suggestion + Environment.NewLine)))
+                    {
+                        await stream.WriteAsync(sendBytes, 0, sendBytes.Length).ConfigureAwait(false);
+                    }
+                }
             }
         }
     }

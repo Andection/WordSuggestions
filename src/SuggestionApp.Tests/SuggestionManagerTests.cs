@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
+using WordSuggestion.Service;
 
 namespace SuggestionApp.Tests
 {

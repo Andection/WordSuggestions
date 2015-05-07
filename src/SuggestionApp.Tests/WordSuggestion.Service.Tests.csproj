@@ -85,6 +85,10 @@
       <Project>{16d84f2b-7374-47ec-89f3-f49ee4159819}</Project>
       <Name>WordSuggestion.App</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WordSuggestion.Service\WordSuggestion.Service.csproj">
+      <Project>{F46E678F-5E6D-4F7D-9E3D-57573EACDAD9}</Project>
+      <Name>WordSuggestion.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -27,7 +27,7 @@ namespace SuggestionApp
             }
         }
 
-        private static void WriteSuggestions(IEnumerable<string> result, StreamWriter streamWriter)
+        private static void WriteSuggestions(IEnumerable<string> result, TextWriter streamWriter)
         {
             foreach (var suggestion in result)
             {
