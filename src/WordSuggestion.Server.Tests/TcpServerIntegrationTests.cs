@@ -31,7 +31,7 @@ namespace WordSuggestion.IntegrationTests
             _client = new WordSuggestionClient("localhost", Port, _streamReader, streamWriter);
 
             _server.Start();
-            _client.Start();
+            _client.Run();
 
             Thread.Sleep(1000);
         }

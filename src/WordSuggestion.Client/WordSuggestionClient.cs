@@ -3,6 +3,8 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
+using Common.Logging;
 using WordSuggestion.Service;
 
 namespace WordSuggestion.Client
@@ -15,6 +17,8 @@ namespace WordSuggestion.Client
         private readonly StreamWriter _textWriter;
         private TcpClient _tcpClient;
 
+        private readonly ILog Log = LogManager.GetLogger(typeof (WordSuggestionClient));
+
         public WordSuggestionClient(string hostname, int port, StreamReader textReader, StreamWriter textWriter)
         {
             _hostname = hostname;
@@ -23,7 +27,7 @@ namespace WordSuggestion.Client
             _textWriter = textWriter;
         }
 
-        public async void Start()
+        public async void Run()
         {
             using (_tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 1000)))
             {
@@ -38,12 +42,21 @@ namespace WordSuggestion.Client
                     if (!string.IsNullOrEmpty(readLine))
                     {
                         await stream.WriteAsync(readLine).ConfigureAwait(false);
+                        if (Log.IsInfoEnabled)
+                        {
+                            var line = readLine;
+                            Log.Info(m => m("client: {0} has been sent", line));
+                        }
                     }
 
                     while (stream.DataAvailable)
                     {
                         var message = await stream.ReadAsync().ConfigureAwait(false);
                         await _textWriter.WriteAsync(message).ConfigureAwait(false);
+                        if (Log.IsInfoEnabled)
+                        {
+                            Log.Info(m => m("client: {0} has been received", message));
+                        }
                     }
 
                     readLine = await _textReader.ReadLineAsync().ConfigureAwait(false) ?? string.Empty;
