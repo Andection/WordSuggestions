@@ -3,11 +3,11 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
+using WordSuggestion.Service;
 
 namespace WordSuggestion.Client
 {
-    public class WordSuggestionClient:IDisposable
+    public class WordSuggestionClient : IDisposable
     {
         private readonly string _hostname;
         private readonly int _port;
@@ -25,39 +25,30 @@ namespace WordSuggestion.Client
 
         public async void Start()
         {
-            _tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 1000));
-            await _tcpClient.ConnectAsync(_hostname, _port).ConfigureAwait(false);
-
-            var readLine = await _textReader.ReadLineAsync() ?? string.Empty;
-
-            var buffer = new Byte[1024];
-
-            while (readLine.ToLower() != "exit")
+            using (_tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 1000)))
             {
-                if (!string.IsNullOrEmpty(readLine))
+                await _tcpClient.ConnectAsync(_hostname, _port).ConfigureAwait(false);
+
+                var stream = new StringNetworkStream(_tcpClient.GetStream(), Encoding.ASCII);
+
+                var readLine = await _textReader.ReadLineAsync() ?? string.Empty;
+
+                while (readLine.ToLower() != "exit")
                 {
-                    var bytes = Encoding.ASCII.GetBytes(readLine);
-
-                    await _tcpClient.GetStream().WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
-
-                    var textData = await Read(buffer);
-                    await _textWriter.WriteAsync(textData).ConfigureAwait(false);
-
-                    while (_tcpClient.Available != 0)
+                    if (!string.IsNullOrEmpty(readLine))
                     {
-                        textData = await Read(buffer);
-                        await _textWriter.WriteAsync(textData).ConfigureAwait(false);
+                        await stream.WriteAsync(readLine).ConfigureAwait(false);
                     }
+
+                    while (stream.DataAvailable)
+                    {
+                        var message = await stream.ReadAsync().ConfigureAwait(false);
+                        await _textWriter.WriteAsync(message).ConfigureAwait(false);
+                    }
+
+                    readLine = await _textReader.ReadLineAsync().ConfigureAwait(false) ?? string.Empty;
                 }
-                readLine = await _textReader.ReadLineAsync().ConfigureAwait(false) ?? string.Empty;
             }
-        }
-
-        private async Task<string> Read(byte[] buffer)
-        {
-            var readData = await _tcpClient.GetStream().ReadAsync(buffer, 0, buffer.Length);
-
-            return Encoding.ASCII.GetString(buffer, 0, readData);
         }
 
         public void Dispose()

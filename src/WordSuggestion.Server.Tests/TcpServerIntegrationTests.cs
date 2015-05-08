@@ -17,6 +17,7 @@ namespace WordSuggestion.IntegrationTests
         private WordSuggestionClient _client;
         private MemoryStream _clientInput;
         private MemoryStream _clientOutput;
+        private StreamReader _streamReader;
 
         [SetUp]
         public void SetUp()
@@ -25,12 +26,23 @@ namespace WordSuggestion.IntegrationTests
           
             _clientInput = new MemoryStream();
             _clientOutput = new MemoryStream();
-            _client = new WordSuggestionClient("localhost", Port, new StreamReader(_clientInput), new StreamWriter(_clientOutput));
+            _streamReader = new StreamReader(_clientInput);
+            var streamWriter = new StreamWriter(_clientOutput) {AutoFlush = true};
+            _client = new WordSuggestionClient("localhost", Port, _streamReader, streamWriter);
 
             _server.Start();
             _client.Start();
 
             Thread.Sleep(1000);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _clientInput.Dispose();
+            _clientOutput.Dispose();
+            _client.Dispose();
+            _server.Stop();
         }
 
         [Test]
@@ -39,11 +51,14 @@ namespace WordSuggestion.IntegrationTests
             const string simpleToken = "a";
             var bytes = Encoding.ASCII.GetBytes("get " + simpleToken + Environment.NewLine);
             _clientInput.Write(bytes, 0, bytes.Length);
+            _clientInput.Flush();
+            _clientInput.Seek(0, SeekOrigin.Begin);
 
             Thread.Sleep(10000);
 
             var buffer = new byte[1024];
 
+            _clientOutput.Position = 0;
             var readByteCount = _clientOutput.Read(buffer, 0, buffer.Length);
 
             var readTex = Encoding.ASCII.GetString(buffer, 0, readByteCount);
