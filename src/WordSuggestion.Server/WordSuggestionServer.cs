@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Common.Logging;
 
 namespace WordSuggestion.Server
@@ -19,7 +20,7 @@ namespace WordSuggestion.Server
             _tcpListener = new TcpListener(IPAddress.Any, port);
         }
 
-        public async void Start()
+        public async Task Start()
         {
             _tcpListener.Start();
             if (Log.IsInfoEnabled)

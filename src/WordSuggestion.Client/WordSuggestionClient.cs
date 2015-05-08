@@ -17,7 +17,7 @@ namespace WordSuggestion.Client
         private readonly StreamWriter _textWriter;
         private TcpClient _tcpClient;
 
-        private readonly ILog Log = LogManager.GetLogger(typeof (WordSuggestionClient));
+        private readonly ILog _log = LogManager.GetLogger(typeof (WordSuggestionClient));
 
         public WordSuggestionClient(string hostname, int port, StreamReader textReader, StreamWriter textWriter)
         {
@@ -27,9 +27,9 @@ namespace WordSuggestion.Client
             _textWriter = textWriter;
         }
 
-        public async void Run()
+        public async Task Run()
         {
-            using (_tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 1000)))
+            using (_tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 0)))
             {
                 await _tcpClient.ConnectAsync(_hostname, _port).ConfigureAwait(false);
 
@@ -42,10 +42,10 @@ namespace WordSuggestion.Client
                     if (!string.IsNullOrEmpty(readLine))
                     {
                         await stream.WriteAsync(readLine).ConfigureAwait(false);
-                        if (Log.IsInfoEnabled)
+                        if (_log.IsInfoEnabled)
                         {
                             var line = readLine;
-                            Log.Info(m => m("client: {0} has been sent", line));
+                            _log.Info(m => m("client: {0} has been sent", line));
                         }
                     }
 
@@ -53,9 +53,9 @@ namespace WordSuggestion.Client
                     {
                         var message = await stream.ReadAsync().ConfigureAwait(false);
                         await _textWriter.WriteAsync(message).ConfigureAwait(false);
-                        if (Log.IsInfoEnabled)
+                        if (_log.IsInfoEnabled)
                         {
-                            Log.Info(m => m("client: {0} has been received", message));
+                            _log.Info(m => m("client: {0} has been received", message));
                         }
                     }
 

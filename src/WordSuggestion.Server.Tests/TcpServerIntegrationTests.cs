@@ -54,7 +54,7 @@ namespace WordSuggestion.IntegrationTests
             _clientInput.Flush();
             _clientInput.Seek(0, SeekOrigin.Begin);
 
-            Thread.Sleep(10000);
+            Thread.Sleep(3000);
 
             var buffer = new byte[1024];
 
