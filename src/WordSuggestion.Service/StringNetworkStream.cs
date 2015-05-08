@@ -29,7 +29,6 @@ namespace WordSuggestion.Service
         public Task WriteAsync(string message)
         {
             var buffer = _encoding.GetBytes(message);
-
             return _baseStream.WriteAsync(buffer, 0, buffer.Length);
         }
 

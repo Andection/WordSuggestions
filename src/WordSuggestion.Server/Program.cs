@@ -6,12 +6,12 @@ namespace WordSuggestion.Server
 {
     class Program
     {
-        private static async void Main(string[] args)
+        private static void Main(string[] args)
         {
             var arguments = Parse(args);
 
             var server = new WordSuggestionServer(new WordSuggestionHandlingService(arguments.SourceFileName), arguments.Port);
-            await server.Start();
+            server.Start().Wait();
         }
 
         private static Arguments Parse(string[] args)

@@ -6,15 +6,16 @@ namespace WordSuggestion.Client
 {
     internal class Program
     {
-        private static async void Main(string[] args)
+        private static void Main(string[] args)
         {
             var arguments = Parse(args);
 
             var input = new StreamReader(Console.OpenStandardInput());
             var output = new StreamWriter(Console.OpenStandardOutput());
+            output.AutoFlush = true;
             var client = new WordSuggestionClient(arguments.Hostname, arguments.Port, input, output);
 
-            await client.Run();
+            client.Run().Wait();
         }
 
         private static Arguments Parse(string[] args)
