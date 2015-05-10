@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace WordSuggestion.Service
@@ -14,7 +15,12 @@ namespace WordSuggestion.Service
 
         public static IEnumerable<string> Suggest(string token)
         {
-            return _hashTable.Find(token).Select(s => s.Word).ToArray();
+            if (token == null)
+                throw new ArgumentNullException("token");
+
+            var normalizedToken = token.ToLower();
+
+            return _hashTable.Find(normalizedToken).Select(s => s.Word).ToArray();
         }
     }
 }

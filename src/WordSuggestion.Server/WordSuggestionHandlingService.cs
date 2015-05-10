@@ -24,7 +24,7 @@ namespace WordSuggestion.Server
 
         public async Task Handle(NetworkStream stream)
         {
-            var stringStream = new StringNetworkStream(stream, Encoding.ASCII);
+            var stringStream = new WordSuggestionStream(new StringNetworkStream(stream, Encoding.ASCII));
 
             while (true)
             {
@@ -33,24 +33,20 @@ namespace WordSuggestion.Server
                     await Task.Delay(10);
                     continue;
                 }
-                var message = await stringStream.ReadAsync().ConfigureAwait(false);
+                var suggestionToken = await stringStream.ReadAsync().ConfigureAwait(false)??string.Empty;
 
                 if (_log.IsInfoEnabled)
                 {
-                    _log.Info(m => m("recieved {0}", message));
+                    _log.Info(m => m("recieved {0}", suggestionToken));
                 }
-                var suggestTokens = message.Split(new[] {"get"}, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim()).ToArray();
 
-                foreach (var token in suggestTokens)
+                var suggestions = SuggestionManager.Suggest(suggestionToken);
+
+                var suggestionsMessage = String.Join(Environment.NewLine, suggestions);
+                await stringStream.WriteAsync(suggestionsMessage).ConfigureAwait(false);
+                if (_log.IsInfoEnabled)
                 {
-                    var suggestions = SuggestionManager.Suggest(token);
-
-                    var suggestionsMessage = String.Join(Environment.NewLine, suggestions)+Environment.NewLine;
-                    await stringStream.WriteAsync(suggestionsMessage).ConfigureAwait(false);
-                    if (_log.IsInfoEnabled)
-                    {
-                        _log.Info(m => m("sent {0}", suggestionsMessage));
-                    }
+                    _log.Info(m => m("sent {0}", suggestionsMessage));
                 }
             }
         }

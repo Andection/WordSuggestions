@@ -1,21 +1,67 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 
 namespace WordSuggestion.Client
 {
     internal class Program
     {
+        private const string GetToken = "get ";
+        private const string ExitToken = "exit";
+        private const string Help = "cannot recognize command. Type \"get <prefix>\" for suggestion or \"exit\" for exit ";
+        private const string HaveNoSuggestions = "Have no suggestions";
         private static void Main(string[] args)
         {
             var arguments = Parse(args);
 
-            var input = new StreamReader(Console.OpenStandardInput());
-            var output = new StreamWriter(Console.OpenStandardOutput());
-            output.AutoFlush = true;
-            var client = new WordSuggestionClient(arguments.Hostname, arguments.Port, input, output);
+            using (var client = new WordSuggestionClient(arguments.Hostname, arguments.Port))
+            {
+                client.Connect().Wait();
 
-            client.Run().Wait();
+                var line = Console.ReadLine() ?? string.Empty;
+
+                while (line != ExitToken)
+                {
+                    var suggestionToken = TryExtractSuggestion(line);
+                    if (string.IsNullOrEmpty(suggestionToken))
+                    {
+                        Console.WriteLine(Help);
+                    }
+                    else
+                    {
+                        var suggestions = client.GetSuggestions(suggestionToken).Result;
+                        if (suggestions.Any())
+                        {
+                            foreach (var suggestion in suggestions)
+                            {
+                                Console.WriteLine(suggestion);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine(HaveNoSuggestions);
+                        }
+                    }
+
+                    line = Console.ReadLine() ?? string.Empty;
+                }
+            }
+        }
+
+        private static string TryExtractSuggestion(string line)
+        {
+            if (line == null)
+                throw new ArgumentNullException("line");
+
+            var startGetTokenIndex = line.IndexOf(GetToken, StringComparison.OrdinalIgnoreCase);
+            if (startGetTokenIndex == -1)
+                return string.Empty;
+
+            var startTokenIndex = startGetTokenIndex + GetToken.Length;
+            if (line.Length <= startTokenIndex)
+                return string.Empty;
+
+            var endTokenIndex = line.IndexOf(" ", startTokenIndex, StringComparison.OrdinalIgnoreCase);
+            return endTokenIndex == -1 ? line.Substring(startTokenIndex) : line.Substring(startTokenIndex, endTokenIndex - startTokenIndex);
         }
 
         private static Arguments Parse(string[] args)

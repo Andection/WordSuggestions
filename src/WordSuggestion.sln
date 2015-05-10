@@ -22,7 +22,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSuggestion.Server", "Wo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSuggestion.Client", "WordSuggestion.Client\WordSuggestion.Client.csproj", "{5D41BBF5-57E0-4BCD-81D0-39597C234C83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSuggestion.IntegrationTests", "WordSuggestion.Server.Tests\WordSuggestion.IntegrationTests.csproj", "{4F434127-E3EE-4D70-A0D0-909ED40ACC87}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordSuggestion.Server.Tests", "WordSuggestion.Server.Tests\WordSuggestion.Server.Tests.csproj", "{D3E2A7C4-DCD2-437A-A6E8-2888081EDBFF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,10 +50,10 @@ Global
 		{5D41BBF5-57E0-4BCD-81D0-39597C234C83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D41BBF5-57E0-4BCD-81D0-39597C234C83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D41BBF5-57E0-4BCD-81D0-39597C234C83}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4F434127-E3EE-4D70-A0D0-909ED40ACC87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4F434127-E3EE-4D70-A0D0-909ED40ACC87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4F434127-E3EE-4D70-A0D0-909ED40ACC87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4F434127-E3EE-4D70-A0D0-909ED40ACC87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3E2A7C4-DCD2-437A-A6E8-2888081EDBFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3E2A7C4-DCD2-437A-A6E8-2888081EDBFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3E2A7C4-DCD2-437A-A6E8-2888081EDBFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3E2A7C4-DCD2-437A-A6E8-2888081EDBFF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
