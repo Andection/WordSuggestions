@@ -1,17 +1,26 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Common.Logging;
 
 namespace WordSuggestion.Server
 {
     class Program
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof (Program));
         private static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException+=OnUnhandledException;
+
             var arguments = Parse(args);
 
             var server = new WordSuggestionServer(new WordSuggestionHandlingService(arguments.SourceFileName), arguments.Port);
             server.Start().Wait();
+        }
+
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.Fatal("unhandled exception occured", (Exception) e.ExceptionObject);
         }
 
         private static Arguments Parse(string[] args)

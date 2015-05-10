@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace WordSuggestion.Server
         private readonly WordSuggestionHandlingService _handlingService;
         private readonly int _port;
         private readonly TcpListener _tcpListener;
-        private static ILog Log = LogManager.GetLogger(typeof (WordSuggestionServer));
+        private static readonly ILog Log = LogManager.GetLogger(typeof (WordSuggestionServer));
 
         public WordSuggestionServer(WordSuggestionHandlingService handlingService, int port)
         {
@@ -55,9 +56,16 @@ namespace WordSuggestion.Server
 
         private async void OnNewConnection(TcpClient client)
         {
-            using (client)
+            try
             {
-                await _handlingService.Handle(client.GetStream());
+                using (client)
+                {
+                    await _handlingService.Handle(client.GetStream());
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn("exception occured during connection", ex);
             }
         }
     }

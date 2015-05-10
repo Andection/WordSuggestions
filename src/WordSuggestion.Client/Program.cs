@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Common.Logging;
 
 namespace WordSuggestion.Client
 {
@@ -9,8 +10,12 @@ namespace WordSuggestion.Client
         private const string ExitToken = "exit";
         private const string Help = "cannot recognize command. Type \"get <prefix>\" for suggestion or \"exit\" for exit ";
         private const string HaveNoSuggestions = "Have no suggestions";
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
+
         private static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+
             var arguments = Parse(args);
 
             using (var client = new WordSuggestionClient(arguments.Hostname, arguments.Port))
@@ -45,6 +50,11 @@ namespace WordSuggestion.Client
                     line = Console.ReadLine() ?? string.Empty;
                 }
             }
+        }
+
+        private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.Fatal("unhandled exception occured", (Exception) e.ExceptionObject);
         }
 
         private static string TryExtractSuggestion(string line)
