@@ -36,17 +36,9 @@ namespace WordSuggestion.Service
 
         public async Task<string> ReadAsync()
         {
-            var result = new StringBuilder();
+            var readCount = await _baseStream.ReadAsync(_readBuffer, 0, _readBuffer.Length).ConfigureAwait(false);
 
-            while (_baseStream.DataAvailable)
-            {
-                var readCount = await _baseStream.ReadAsync(_readBuffer, 0, _readBuffer.Length).ConfigureAwait(false);
-
-                var textMessage = _encoding.GetString(_readBuffer, 0, readCount);
-                result.Append(textMessage);
-            }
-
-            return result.ToString();
+            return _encoding.GetString(_readBuffer, 0, readCount);
         }
     }
 }

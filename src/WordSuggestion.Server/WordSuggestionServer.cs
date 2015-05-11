@@ -61,9 +61,8 @@ namespace WordSuggestion.Server
                 {
                     client.ReceiveBufferSize = 1024;
                     client.SendBufferSize = 1024;
-                    client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, 10 * 60 * 1000);
 
-                    await _handlingService.Handle(client.GetStream());
+                    await _handlingService.Handle(client);
                 }
             }
             catch (Exception ex)

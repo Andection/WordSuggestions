@@ -23,18 +23,13 @@ namespace WordSuggestion.Server
             }
         }
 
-        public async Task Handle(NetworkStream stream)
+        public async Task Handle(TcpClient client)
         {
-            var wordSuggestionStream = new WordSuggestionStream(new StringNetworkStream(stream, Encoding.ASCII));
+            var wordSuggestionStream = new WordSuggestionStream(new StringNetworkStream(client.GetStream(), Encoding.ASCII));
 
             while (true)
             {
-                if (!wordSuggestionStream.DataAvailable)
-                {
-                    await Task.Delay(10);
-                    continue;
-                }
-
+  
                 var suggestionToken = await wordSuggestionStream.ReadAsync().ConfigureAwait(false) ?? string.Empty;
 
                 if (_log.IsInfoEnabled)
