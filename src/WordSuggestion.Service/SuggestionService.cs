@@ -4,16 +4,16 @@ using System.Linq;
 
 namespace WordSuggestion.Service
 {
-    public static class SuggestionManager
+    public class SuggestionService
     {
         private static SuggestionHashTable _hashTable;
 
-        public static void Init(SuggestionHashTable hashTable)
+        public SuggestionService(SuggestionHashTable hashTable)
         {
             _hashTable = hashTable;
         }
 
-        public static IEnumerable<string> Suggest(string token)
+        public IEnumerable<string> Suggest(string token)
         {
             if (token == null)
                 throw new ArgumentNullException("token");

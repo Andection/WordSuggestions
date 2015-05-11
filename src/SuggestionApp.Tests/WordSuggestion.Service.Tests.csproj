@@ -78,7 +78,7 @@
     <Compile Include="SpeedTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SuggestionHashTableTests.cs" />
-    <Compile Include="SuggestionManagerTests.cs" />
+    <Compile Include="SuggestionServiceTests.cs" />
     <Compile Include="WordComparerTests.cs" />
   </ItemGroup>
   <ItemGroup>

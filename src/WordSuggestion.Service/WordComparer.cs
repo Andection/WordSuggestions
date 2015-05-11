@@ -11,7 +11,7 @@ namespace WordSuggestion.Service
             {
                 return frequencyComparison;
             }
-            return x.Word.CompareTo(y.Word);
+            return System.String.Compare(x.Word, y.Word, System.StringComparison.Ordinal);
         }
     }
 }

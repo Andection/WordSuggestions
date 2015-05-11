@@ -7,6 +7,7 @@ namespace WordSuggestion.Service
     {
         private readonly StringNetworkStream _stringStream;
 
+        //Сообщения обрамляются специальными символами.
         private const char StartMessage = (char) 0x02;
         private const char EndMessage = (char) 0x03;
         private string _notCompletedMessage = string.Empty;
@@ -31,7 +32,7 @@ namespace WordSuggestion.Service
             var result = new StringBuilder();
 
             result.Append(_notCompletedMessage);
-            //дополнительных выделений памяти быть не должно для небольших (<64 кб) строк
+            //дополнительных выделений памяти быть не должно для небольших (<64 кб) строк. По условиям задачи больших строк не будет
             while (result.ToString().IndexOf(EndMessage) == -1)
             {
                 var receivedSegment = await _stringStream.ReadAsync().ConfigureAwait(false);
@@ -41,7 +42,6 @@ namespace WordSuggestion.Service
             var receivedText = result.ToString();
 
             var startIndex = receivedText.IndexOf(StartMessage);
-            //startIndex==-1????
             var endIndex = receivedText.IndexOf(EndMessage);
             var message = receivedText.Substring(startIndex + 1, endIndex - startIndex - 1);
 

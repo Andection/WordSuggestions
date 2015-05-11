@@ -27,7 +27,7 @@ namespace WordSuggestion.Service
             var current = _list.First;
             while (current != null)
             {
-                if (_comparer.Compare(current.Value, elem) > 0)
+                if (_comparer.Compare(current.Value, elem) < 0)
                 {
                     _list.AddBefore(current, elem);
                     Truncate();

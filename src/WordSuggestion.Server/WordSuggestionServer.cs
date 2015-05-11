@@ -32,7 +32,6 @@ namespace WordSuggestion.Server
             while (true)
             {
                 var tcpClient = await _tcpListener.AcceptTcpClientAsync();
-
                 if (Log.IsInfoEnabled)
                 {
                     Log.Info(m => m("client {0} has been connected", tcpClient.Client.RemoteEndPoint));
@@ -60,6 +59,10 @@ namespace WordSuggestion.Server
             {
                 using (client)
                 {
+                    client.ReceiveBufferSize = 1024;
+                    client.SendBufferSize = 1024;
+                    client.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, 10 * 60 * 1000);
+
                     await _handlingService.Handle(client.GetStream());
                 }
             }

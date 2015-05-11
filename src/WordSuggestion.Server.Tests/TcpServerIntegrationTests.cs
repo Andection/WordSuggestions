@@ -28,7 +28,6 @@ namespace WordSuggestion.Server.Tests
         [TearDown]
         public void TearDown()
         {
-
             _client.Dispose();
             _server.Stop();
         }

@@ -12,7 +12,7 @@ namespace SuggestionApp
             using (var stream = new StreamReader(Console.OpenStandardInput()))
             {
                 var dictionary = DictionaryLoader.Load(stream);
-                SuggestionManager.Init(dictionary);
+                var suggestionService = new SuggestionService(dictionary);
 
                 var suggestCount = Convert.ToInt32(stream.ReadLine());
                 using (var streamWriter = new StreamWriter(Console.OpenStandardOutput()))
@@ -20,7 +20,7 @@ namespace SuggestionApp
                     for (var i = 0; i < suggestCount; i++)
                     {
                         var token = stream.ReadLine();
-                        var result = SuggestionManager.Suggest(token);
+                        var result = suggestionService.Suggest(token);
                         WriteSuggestions(result, streamWriter);
                     }
                 }

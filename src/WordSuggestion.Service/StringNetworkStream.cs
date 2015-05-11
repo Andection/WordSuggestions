@@ -9,6 +9,8 @@ namespace WordSuggestion.Service
     {
         private readonly NetworkStream _baseStream;
         private readonly Encoding _encoding;
+        private readonly byte[] _readBuffer = new byte[1024];
+        private readonly byte[] _writeBuffer = new byte[1024];
 
         public StringNetworkStream(NetworkStream baseStream, Encoding encoding)
         {
@@ -28,21 +30,19 @@ namespace WordSuggestion.Service
 
         public Task WriteAsync(string message)
         {
-            var buffer = _encoding.GetBytes(message);
-            return _baseStream.WriteAsync(buffer, 0, buffer.Length);
+            var bytesCount = _encoding.GetBytes(message, 0, message.Length, _writeBuffer, 0);
+            return _baseStream.WriteAsync(_writeBuffer, 0, bytesCount);
         }
 
         public async Task<string> ReadAsync()
         {
-            var buffer = new byte[1024];
-
             var result = new StringBuilder();
 
             while (_baseStream.DataAvailable)
             {
-                var readCount = await _baseStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                var readCount = await _baseStream.ReadAsync(_readBuffer, 0, _readBuffer.Length).ConfigureAwait(false);
 
-                var textMessage = _encoding.GetString(buffer, 0, readCount);
+                var textMessage = _encoding.GetString(_readBuffer, 0, readCount);
                 result.Append(textMessage);
             }
 
