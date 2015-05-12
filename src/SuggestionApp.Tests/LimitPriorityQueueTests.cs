@@ -41,7 +41,7 @@ namespace SuggestionApp.Tests
 
             res.Should().HaveCount(_limit);
 
-            res.Should().BeInAscendingOrder();
+            res.Should().BeInDescendingOrder();
         }
 
         [Test]

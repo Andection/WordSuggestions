@@ -48,7 +48,18 @@ namespace SuggestionApp.Tests
         [TestCaseSource("_comparastionTestCases")]
         public void should_compare(WordInfo word1, WordInfo word2, int result)
         {
-            _comparer.Compare(word1, word2).Should().Be(result);
+            if (result == 0)
+            {
+                _comparer.Compare(word1, word2).Should().Be(0);
+            }
+            else if (result < 0)
+            {
+                _comparer.Compare(word1, word2).Should().BeLessThan(0);
+            }
+            else
+            {
+                _comparer.Compare(word1, word2).Should().BeGreaterThan(0);
+            }
         }
     }
 }
