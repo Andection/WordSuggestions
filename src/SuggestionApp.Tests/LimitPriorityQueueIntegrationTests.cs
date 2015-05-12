@@ -6,7 +6,7 @@ using WordSuggestion.Service;
 namespace SuggestionApp.Tests
 {
     [TestFixture]
-    public class LimitPriorityQueueIntegrationTestsTests
+    public class LimitPriorityQueueIntegrationTests
     {
         private int _limit;
         private LimitPriorityQueue<WordInfo> _queue;

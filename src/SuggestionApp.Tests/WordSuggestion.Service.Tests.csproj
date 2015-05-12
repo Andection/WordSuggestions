@@ -73,7 +73,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="DictionaryLoaderTests.cs" />
-    <Compile Include="LimitPriorityQueueIntegrationTestsTests.cs" />
+    <Compile Include="LimitPriorityQueueIntegrationTests.cs" />
     <Compile Include="LimitPriorityQueueTests.cs" />
     <Compile Include="SpeedTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
