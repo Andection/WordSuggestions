@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using WordSuggestion.Service;
@@ -30,6 +29,7 @@ namespace WordSuggestion.Server
 
             while (true)
             {
+                //Асинхронно ждем данных. При обрыве соединения завершаем обработку клиента.
                 var suggestionToken = await wordSuggestionStream.ReadAsync().ConfigureAwait(false) ?? string.Empty;
 
                 if (_log.IsInfoEnabled)
