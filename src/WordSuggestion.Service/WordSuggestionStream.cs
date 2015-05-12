@@ -37,12 +37,13 @@ namespace WordSuggestion.Service
         {
             var result = new StringBuilder();
 
-            result.Append(_notCompletedMessage);
-            //дополнительных выделений памяти быть не должно для небольших (<64 кб) строк. По условиям задачи больших строк не будет
-            while (result.ToString().IndexOf(EndMessage) == -1)
+            var lastSegment = _notCompletedMessage;
+
+            result.Append(lastSegment);
+            while (lastSegment.IndexOf(EndMessage) == -1)
             {
-                var receivedSegment = await _stringStream.ReadAsync(cancellationToken).ConfigureAwait(false);
-                result.Append(receivedSegment);
+                lastSegment = await _stringStream.ReadAsync(cancellationToken).ConfigureAwait(false);
+                result.Append(lastSegment);
             }
 
             var receivedText = result.ToString();
