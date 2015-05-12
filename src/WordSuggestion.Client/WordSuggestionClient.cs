@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Common.Logging;
 using WordSuggestion.Service;
 
 namespace WordSuggestion.Client
@@ -14,8 +13,6 @@ namespace WordSuggestion.Client
         private readonly string _hostname;
         private readonly int _port;
         private TcpClient _tcpClient;
-
-        private readonly ILog _log = LogManager.GetLogger(typeof (WordSuggestionClient));
 
         public WordSuggestionClient(string hostname, int port)
         {
@@ -29,7 +26,7 @@ namespace WordSuggestion.Client
                 throw new InvalidOperationException();
 
             _tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 0)) {ReceiveBufferSize = 1024, SendBufferSize = 1024};
-            _tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, 100);
+            _tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, true);
 
             return _tcpClient.ConnectAsync(_hostname, _port);
         }
