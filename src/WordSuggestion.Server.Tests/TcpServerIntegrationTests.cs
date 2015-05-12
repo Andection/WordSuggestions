@@ -13,16 +13,15 @@ namespace WordSuggestion.Server.Tests
         private WordSuggestionClient _client;
 
         [SetUp]
-        public void SetUp()
+        public async void SetUp()
         {
             _server = new WordSuggestionServer(new WordSuggestionHandlingService("input.txt"), Port);
 
             _client = new WordSuggestionClient("localhost", Port);
 
             _server.Start();
-            _client.Connect();
-
             Thread.Sleep(1000);
+            await _client.Connect();
         }
 
         [TearDown]

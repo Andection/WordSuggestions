@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WordSuggestion.Service
@@ -34,9 +35,9 @@ namespace WordSuggestion.Service
             return _baseStream.WriteAsync(_writeBuffer, 0, bytesCount);
         }
 
-        public async Task<string> ReadAsync()
+        public async Task<string> ReadAsync(CancellationToken cancellationToken)
         {
-            var readCount = await _baseStream.ReadAsync(_readBuffer, 0, _readBuffer.Length).ConfigureAwait(false);
+            var readCount = await _baseStream.ReadAsync(_readBuffer, 0, _readBuffer.Length, cancellationToken).ConfigureAwait(false);
 
             return _encoding.GetString(_readBuffer, 0, readCount);
         }

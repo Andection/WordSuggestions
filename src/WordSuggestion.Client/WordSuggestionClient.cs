@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Common.Logging;
 using WordSuggestion.Service;
@@ -28,6 +29,7 @@ namespace WordSuggestion.Client
                 throw new InvalidOperationException();
 
             _tcpClient = new TcpClient(new IPEndPoint(IPAddress.Any, 0)) {ReceiveBufferSize = 1024, SendBufferSize = 1024};
+            _tcpClient.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, 100);
 
             return _tcpClient.ConnectAsync(_hostname, _port);
         }
@@ -38,7 +40,7 @@ namespace WordSuggestion.Client
 
             await suggestionSteam.WriteAsync(token).ConfigureAwait(false);
 
-            var rawSuggestions = await suggestionSteam.ReadAsync().ConfigureAwait(false);
+            var rawSuggestions = await suggestionSteam.ReadAsync(new CancellationTokenSource(TimeSpan.FromMinutes(1)).Token).ConfigureAwait(false);
 
             return rawSuggestions.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries);
         }

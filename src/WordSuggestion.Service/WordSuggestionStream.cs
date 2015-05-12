@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WordSuggestion.Service
@@ -27,7 +28,12 @@ namespace WordSuggestion.Service
             return _stringStream.WriteAsync(StartMessage + message + EndMessage);
         }
 
-        public async Task<string> ReadAsync()
+        public Task<string> ReadAsync()
+        {
+            return ReadAsync(new CancellationTokenSource().Token);
+        }
+
+        public async Task<string> ReadAsync(CancellationToken cancellationToken)
         {
             var result = new StringBuilder();
 
@@ -35,7 +41,7 @@ namespace WordSuggestion.Service
             //дополнительных выделений памяти быть не должно для небольших (<64 кб) строк. По условиям задачи больших строк не будет
             while (result.ToString().IndexOf(EndMessage) == -1)
             {
-                var receivedSegment = await _stringStream.ReadAsync().ConfigureAwait(false);
+                var receivedSegment = await _stringStream.ReadAsync(cancellationToken).ConfigureAwait(false);
                 result.Append(receivedSegment);
             }
 
